@@ -1,20 +1,40 @@
-// Use environment variable if set, otherwise default to production URL if on vercel domain
-const getApiUrl = () => {
+// Determine API URL - check environment variable first, then production mode, then hostname
+function getApiUrl() {
+  // Priority 1: Use explicit environment variable if set
   if (import.meta.env.VITE_API_URL) {
     return import.meta.env.VITE_API_URL;
   }
   
-  // Check if we're running on Vercel (production)
-  const hostname = window.location.hostname;
-  if (hostname.includes('vercel.app') || hostname.includes('vercel.com') || import.meta.env.PROD) {
+  // Priority 2: Check if in production mode (Vite build)
+  if (import.meta.env.PROD) {
     return 'https://redcross-server.vercel.app';
   }
   
-  // Default to localhost for local development
+  // Priority 3: Check hostname at runtime (for cases where PROD isn't set)
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    if (hostname.includes('vercel.app') || hostname.includes('vercel.com')) {
+      return 'https://redcross-server.vercel.app';
+    }
+  }
+  
+  // Default: localhost for development
   return 'http://localhost:4000';
-};
+}
 
-const API_URL = getApiUrl();
+// Get API URL - evaluated at module load, but can be updated at runtime
+let API_URL = getApiUrl();
+
+// Function to update API URL at runtime (useful for dynamic detection)
+export function updateApiUrl() {
+  API_URL = getApiUrl();
+  return API_URL;
+}
+
+// Export current API URL getter
+export function getApiUrlRuntime() {
+  return getApiUrl();
+}
 
 export function setToken(token) {
   localStorage.setItem('token', token);
@@ -32,7 +52,9 @@ async function request(path, opts = {}) {
   const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
   const token = getToken();
   if (token) headers.Authorization = `Bearer ${token}`;
-  const res = await fetch(`${API_URL}${path}`, { ...opts, headers });
+  // Always get fresh API URL in case of dynamic updates
+  const currentApiUrl = getApiUrl();
+  const res = await fetch(`${currentApiUrl}${path}`, { ...opts, headers });
   if (!res.ok) {
     const error = await res.json().catch(() => ({ error: 'Request failed' }));
     throw new Error(error.error || 'Request failed');
