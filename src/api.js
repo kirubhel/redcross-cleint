@@ -1,4 +1,20 @@
-const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://redcross-server.vercel.app' : 'http://localhost:4000');
+// Use environment variable if set, otherwise default to production URL if on vercel domain
+const getApiUrl = () => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  
+  // Check if we're running on Vercel (production)
+  const hostname = window.location.hostname;
+  if (hostname.includes('vercel.app') || hostname.includes('vercel.com') || import.meta.env.PROD) {
+    return 'https://redcross-server.vercel.app';
+  }
+  
+  // Default to localhost for local development
+  return 'http://localhost:4000';
+};
+
+const API_URL = getApiUrl();
 
 export function setToken(token) {
   localStorage.setItem('token', token);
