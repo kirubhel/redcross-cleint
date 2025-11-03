@@ -44,7 +44,11 @@ export default function FormFieldManagement() {
     try {
       setLoading(true)
       if (editing) {
-        await api.formFields.update(editing.id, { ...formData, formType })
+        const fieldId = editing._id || editing.id
+        if (!fieldId) {
+          throw new Error('Field ID is missing')
+        }
+        await api.formFields.update(fieldId, { ...formData, formType })
       } else {
         await api.formFields.create({ ...formData, formType })
       }

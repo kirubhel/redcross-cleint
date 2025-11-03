@@ -116,13 +116,34 @@ export default function Donation() {
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   {t.phone} *
                 </label>
-                <input
-                  type="tel"
-                  value={formData.phone}
-                  onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                  required
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-ercs-red focus:border-ercs-red"
-                />
+                <div className="relative">
+                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2 z-10">
+                    <span className="text-lg">🇪🇹</span>
+                    <span className="text-gray-600 font-semibold">+251</span>
+                  </div>
+                  <input
+                    type="tel"
+                    placeholder={language === 'en' ? '9XX XXX XXXX' :
+                                 language === 'am' ? '9XX XXX XXXX' :
+                                 '9XX XXX XXXX'}
+                    value={formData.phone && formData.phone.startsWith('+251') ? formData.phone.substring(4).trim() : (formData.phone || '')}
+                    onChange={e => {
+                      let input = e.target.value.replace(/[^\d\s]/g, '')
+                      // Limit to 9 digits (typical Ethiopian mobile number)
+                      input = input.replace(/\s/g, '').substring(0, 9)
+                      // Format with spaces: 9XX XXX XXXX
+                      if (input.length > 3) {
+                        input = input.substring(0, 3) + ' ' + input.substring(3)
+                      }
+                      if (input.length > 7) {
+                        input = input.substring(0, 7) + ' ' + input.substring(7)
+                      }
+                      setFormData({ ...formData, phone: input ? '+251 ' + input : '' })
+                    }}
+                    required
+                    className="w-full pl-20 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-ercs-red focus:border-ercs-red outline-none transition-all hover:border-gray-300 hover:shadow-sm"
+                  />
+                </div>
               </div>
             </div>
 

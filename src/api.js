@@ -190,6 +190,7 @@ export const api = {
   idcards: {
     generate: (data) => request('/api/idcards', { method: 'POST', body: JSON.stringify(data) }),
     generateForMember: (data) => request('/api/idcards/member', { method: 'POST', body: JSON.stringify(data) }),
+    generateForVolunteer: (data) => request('/api/idcards/volunteer', { method: 'POST', body: JSON.stringify(data) }),
     my: () => request('/api/idcards/my'),
     verify: (cardNumber) => request(`/api/idcards/card/${cardNumber}`),
     list: () => request('/api/idcards')
