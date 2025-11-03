@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api.js'
+import { useToast } from '../context/ToastContext.jsx'
 
 export default function Hubs() {
+  const { success, error } = useToast()
   const [hubs, setHubs] = useState([])
   const [requests, setRequests] = useState([])
   const [loading, setLoading] = useState(true)
@@ -38,7 +40,7 @@ export default function Hubs() {
     e.preventDefault()
     try {
       await api.hubs.register(formData)
-      alert('Hub registration submitted! It will be reviewed by administrators.')
+      success('Hub registration submitted! It will be reviewed by administrators.')
       setShowRegister(false)
       setFormData({
         name: '',
@@ -50,7 +52,7 @@ export default function Hubs() {
       })
       loadData()
     } catch (e) {
-      alert('Registration failed: ' + e.message)
+      error('Registration failed: ' + e.message)
     }
   }
 

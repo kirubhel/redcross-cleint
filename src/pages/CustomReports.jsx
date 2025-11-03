@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api.js'
+import { useToast } from '../context/ToastContext.jsx'
 
 export default function CustomReports() {
+  const { success, error, info } = useToast()
   const [reportType, setReportType] = useState('volunteers')
   const [filters, setFilters] = useState({})
   const [reportData, setReportData] = useState(null)
@@ -26,8 +28,9 @@ export default function CustomReports() {
         format: 'json'
       })
       setReportData(data)
+      success('Report generated successfully!')
     } catch (e) {
-      alert('Failed to generate report: ' + e.message)
+      error('Failed to generate report: ' + e.message)
     } finally {
       setLoading(false)
     }
@@ -36,7 +39,7 @@ export default function CustomReports() {
   const exportReport = (format) => {
     if (!reportData) return
     // In production, this would generate actual PDF/Excel files
-    alert(`Exporting report as ${format.toUpperCase()}...`)
+    info(`Exporting report as ${format.toUpperCase()}...`)
   }
 
   return (

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api.js'
+import { useToast } from '../context/ToastContext.jsx'
 
 export default function ProfileManagement() {
+  const { success, error } = useToast()
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState(false)
@@ -53,11 +55,11 @@ export default function ProfileManagement() {
     e.preventDefault()
     try {
       await api.updateProfile(formData)
-      alert('Profile updated successfully!')
+      success('Profile updated successfully!')
       setEditing(false)
       loadProfile()
     } catch (e) {
-      alert('Failed to update profile: ' + e.message)
+      error('Failed to update profile: ' + e.message)
     }
   }
 

@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react'
 import { api } from '../api.js'
 import { useLanguage } from '../context/LanguageContext.jsx'
 import { translations } from '../utils/i18n.js'
+import { useToast } from '../context/ToastContext.jsx'
+import { QRCodeSVG } from 'qrcode.react'
 
 export default function IDCardGeneration() {
   const { language } = useLanguage()
   const t = translations[language] || translations.en
+  const { success, error } = useToast()
   const [myCard, setMyCard] = useState(null)
   const [allCards, setAllCards] = useState([])
   const [currentUser, setCurrentUser] = useState(null)
@@ -46,7 +49,7 @@ export default function IDCardGeneration() {
     const file = e.target.files[0]
     if (file) {
       if (file.size > 5 * 1024 * 1024) { // 5MB limit
-        alert(language === 'en' ? 'Image size must be less than 5MB' : 
+        error(language === 'en' ? 'Image size must be less than 5MB' : 
               language === 'am' ? 'የምስል መጠን ከ 5MB ያነሰ መሆን አለበት' : 
               'Guddaan suuraa 5MB gadi fagoo ta\'uu qaba')
         return
@@ -69,7 +72,7 @@ export default function IDCardGeneration() {
     
     // For volunteers and members, photo is required (either new upload or existing in profile)
     if ((isVolunteer || isMember) && !photo && !photoPreview && !currentUser?.profile?.photo) {
-      alert(language === 'en' ? 'Please upload a photo' : 
+      error(language === 'en' ? 'Please upload a photo' : 
             language === 'am' ? 'እባክዎ ፎቶ ይጭኑ' : 
             'Suuraa galchi')
       return
@@ -113,7 +116,7 @@ export default function IDCardGeneration() {
         })
       }
       
-      alert(language === 'en' ? 'ID Card generated successfully!' : 
+      success(language === 'en' ? 'ID Card generated successfully!' : 
             language === 'am' ? 'የመለያ ካርድ በተሳካ ሁኔታ ተፈጥሯል!' : 
             'Kaardii ID milkaa\'eera!')
       setShowGenerateForm(false)
@@ -121,7 +124,7 @@ export default function IDCardGeneration() {
       setPhotoPreview(null)
       loadData()
     } catch (e) {
-      alert(language === 'en' ? 'Failed to generate ID card: ' + e.message : 
+      error(language === 'en' ? 'Failed to generate ID card: ' + e.message : 
             language === 'am' ? 'የመለያ ካርድ ማመንጨት አልተሳካም: ' + e.message : 
             'Kaardii ID hojjachuu hin danda\'e: ' + e.message)
     } finally {
@@ -274,6 +277,7 @@ export default function IDCardGeneration() {
                   )}
                 </div>
                 <div className="text-center">
+                  <div className="text-lg font-bold mb-3">{myCard.user?.name || currentUser?.name || 'Name'}</div>
                   <div className="text-sm mb-2">CARD NUMBER</div>
                   <div className="text-2xl font-bold mb-4">{myCard.cardNumber}</div>
                   <div className="text-sm mb-1">Type: {myCard.type.toUpperCase()}</div>
@@ -286,11 +290,14 @@ export default function IDCardGeneration() {
               {myCard.qrCode && (
                 <div className="mt-4 text-center">
                   <div className="text-sm text-gray-600 mb-2">QR Code for Verification</div>
-                  <div className="bg-white p-4 rounded-lg inline-block">
-                    {/* QR Code visualization placeholder */}
-                    <div className="w-32 h-32 bg-gray-200 flex items-center justify-center rounded">
-                      QR
-                    </div>
+                  <div className="bg-white p-4 rounded-lg inline-block shadow-md border-2 border-gray-200">
+                    <QRCodeSVG 
+                      value={myCard.qrCode} 
+                      size={128} 
+                      level="M"
+                      includeMargin={true}
+                    />
+                    <p className="text-xs text-gray-500 mt-2">Scan to verify card</p>
                   </div>
                 </div>
               )}
@@ -298,6 +305,7 @@ export default function IDCardGeneration() {
             <div>
               <h3 className="font-semibold mb-2">Card Details</h3>
               <div className="space-y-2 text-sm">
+                <div><strong>Name:</strong> {myCard.user?.name || currentUser?.name || 'N/A'}</div>
                 <div><strong>Card Number:</strong> {myCard.cardNumber}</div>
                 <div><strong>Type:</strong> {myCard.type}</div>
                 <div><strong>Status:</strong> {myCard.status}</div>

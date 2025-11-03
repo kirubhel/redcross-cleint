@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom'
 import { LanguageProvider } from './context/LanguageContext.jsx'
+import { ToastProvider } from './context/ToastContext.jsx'
 import Landing from './pages/Landing.jsx'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
@@ -115,15 +116,17 @@ export default function App() {
 
   return (
     <LanguageProvider>
-      <AppContent 
-        isAuthenticated={isAuthenticated}
-        user={user}
-        isAdmin={isAdmin}
-        showIDCardPrompt={showIDCardPrompt}
-        handleLogout={handleLogout}
-        handleIDCardSuccess={handleIDCardSuccess}
-        checkAuth={checkAuth}
-      />
+      <ToastProvider>
+        <AppContent 
+          isAuthenticated={isAuthenticated}
+          user={user}
+          isAdmin={isAdmin}
+          showIDCardPrompt={showIDCardPrompt}
+          handleLogout={handleLogout}
+          handleIDCardSuccess={handleIDCardSuccess}
+          checkAuth={checkAuth}
+        />
+      </ToastProvider>
     </LanguageProvider>
   )
 }

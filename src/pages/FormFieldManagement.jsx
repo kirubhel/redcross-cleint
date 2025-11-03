@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react'
 import { api } from '../api.js'
 import { useLanguage } from '../context/LanguageContext.jsx'
 import { translations } from '../utils/i18n.js'
+import { useToast } from '../context/ToastContext.jsx'
 
 export default function FormFieldManagement() {
   const { language } = useLanguage()
   const t = translations[language] || translations.en
+  const { success, error } = useToast()
   const [formType, setFormType] = useState('volunteer')
   const [fields, setFields] = useState([])
   const [loading, setLoading] = useState(false)
@@ -68,8 +70,8 @@ export default function FormFieldManagement() {
         order: 0,
         isActive: true
       })
-    } catch (error) {
-      alert(error.message || 'Failed to save field')
+    } catch (err) {
+      error(err.message || 'Failed to save field')
     } finally {
       setLoading(false)
     }
@@ -79,9 +81,10 @@ export default function FormFieldManagement() {
     if (!confirm('Are you sure you want to delete this field?')) return
     try {
       await api.formFields.delete(id)
+      success('Field deactivated successfully')
       await loadFields()
-    } catch (error) {
-      alert(error.message || 'Failed to delete field')
+    } catch (err) {
+      error(err.message || 'Failed to delete field')
     }
   }
 
@@ -107,7 +110,7 @@ export default function FormFieldManagement() {
       setLoading(true)
       const suggestions = await api.ai.suggestFields(formType, 'registration form')
       if (suggestions.fields && suggestions.fields.length > 0) {
-        alert(`AI suggests ${suggestions.fields.length} fields. Check console for details.`)
+        success(`AI suggests ${suggestions.fields.length} fields. Check console for details.`)
         console.log('AI Suggestions:', suggestions)
       }
     } catch (error) {

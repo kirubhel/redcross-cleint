@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api.js'
+import { useToast } from '../context/ToastContext.jsx'
 
 export default function Placement() {
+  const { success, error } = useToast()
   const [placements, setPlacements] = useState([])
   const [requests, setRequests] = useState([])
   const [loading, setLoading] = useState(true)
@@ -29,10 +31,10 @@ export default function Placement() {
   const handleApply = async (requestId, hubId) => {
     try {
       await api.placement.create({ request: requestId, hub: hubId })
-      alert('Application submitted successfully!')
+      success('Application submitted successfully!')
       loadData()
     } catch (e) {
-      alert('Application failed: ' + e.message)
+      error('Application failed: ' + e.message)
     }
   }
 

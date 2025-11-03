@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api.js'
+import { useToast } from '../context/ToastContext.jsx'
 
 export default function Activities() {
+  const { success, error } = useToast()
   const [activities, setActivities] = useState([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
@@ -37,12 +39,12 @@ export default function Activities() {
         startTime: new Date(formData.startTime),
         endTime: new Date(formData.endTime)
       })
-      alert('Activity logged successfully!')
+      success('Activity logged successfully!')
       setShowForm(false)
       setFormData({ type: 'volunteer', title: '', description: '', location: '', startTime: '', endTime: '' })
       loadActivities()
     } catch (e) {
-      alert('Failed to log activity: ' + e.message)
+      error('Failed to log activity: ' + e.message)
     }
   }
 

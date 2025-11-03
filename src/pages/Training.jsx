@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api.js'
+import { useToast } from '../context/ToastContext.jsx'
 
 export default function Training() {
+  const { success, error } = useToast()
   const [trainings, setTrainings] = useState([])
   const [myTrainings, setMyTrainings] = useState([])
   const [loading, setLoading] = useState(true)
@@ -29,10 +31,10 @@ export default function Training() {
   const handleRegister = async (id) => {
     try {
       await api.training.register(id)
-      alert('Registered successfully!')
+      success('Registered successfully!')
       loadData()
     } catch (e) {
-      alert('Registration failed: ' + e.message)
+      error('Registration failed: ' + e.message)
     }
   }
 

@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react'
 import { api } from '../api.js'
 import { useLanguage } from '../context/LanguageContext.jsx'
 import { translations } from '../utils/i18n.js'
+import { useToast } from '../context/ToastContext.jsx'
 
 export default function VolunteerRequestManagement() {
   const { language } = useLanguage()
   const t = translations[language] || translations.en
+  const { success, error: showError } = useToast()
   const [pendingRequests, setPendingRequests] = useState([])
   const [selectedRequest, setSelectedRequest] = useState(null)
   const [matches, setMatches] = useState([])
@@ -35,7 +37,7 @@ export default function VolunteerRequestManagement() {
                            language === 'am' ? 'ጥያቄዎችን ለመጫን አልተሳካም. እባክዎ ግንኙነትዎን ይፈትሹ።' : 
                            'Gaaffiwwan hin sochoone. Qunnamsiisa keessan mirkaneessi.')
       setError(errorMessage)
-      alert(errorMessage)
+      showError(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -47,8 +49,8 @@ export default function VolunteerRequestManagement() {
       const data = await api.volunteerMatching.match(requestId)
       setSelectedRequest(data.request)
       setMatches(data.matches || [])
-    } catch (error) {
-      alert(error.message || 'Failed to find matches')
+    } catch (err) {
+      showError(err.message || 'Failed to find matches')
     } finally {
       setLoading(false)
     }
@@ -65,14 +67,14 @@ export default function VolunteerRequestManagement() {
     try {
       setLoading(true)
       await api.volunteerMatching.approve(requestId, volunteerIds)
-      alert(language === 'en' ? 'Volunteers assigned successfully!' : 
+      success(language === 'en' ? 'Volunteers assigned successfully!' : 
             language === 'am' ? 'በፈቃደኛዎች በተሳካ ሁኔታ ተመድበዋል!' :
             'Hawaasa milkaa\'eera!')
       await loadPendingRequests()
       setSelectedRequest(null)
       setMatches([])
-    } catch (error) {
-      alert(error.message || 'Failed to assign volunteers')
+    } catch (err) {
+      showError(err.message || 'Failed to assign volunteers')
     } finally {
       setLoading(false)
     }

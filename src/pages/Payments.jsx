@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api.js'
+import { useToast } from '../context/ToastContext.jsx'
 
 export default function Payments() {
+  const { success, error } = useToast()
   const [payments, setPayments] = useState([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
@@ -34,14 +36,14 @@ export default function Payments() {
         ...formData,
         amount: parseFloat(formData.amount)
       })
-      alert(`Payment initiated! Transaction ID: ${res.item.transactionId}\nStatus: ${res.item.status}`)
+      success(`Payment initiated! Transaction ID: ${res.item.transactionId} - Status: ${res.item.status}`)
       setShowForm(false)
       setFormData({ amount: '', type: 'donation', method: 'mobile_money', description: '' })
       
       // Refresh after a delay to see updated status
       setTimeout(loadPayments, 3000)
     } catch (e) {
-      alert('Payment failed: ' + e.message)
+      error('Payment failed: ' + e.message)
     }
   }
 

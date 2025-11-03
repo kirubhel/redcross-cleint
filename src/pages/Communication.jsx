@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api.js'
+import { useToast } from '../context/ToastContext.jsx'
 
 export default function Communication() {
+  const { success, error } = useToast()
   const [communications, setCommunications] = useState([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
@@ -31,12 +33,12 @@ export default function Communication() {
     e.preventDefault()
     try {
       await api.communication.create(formData)
-      alert('Communication queued for sending!')
+      success('Communication queued for sending!')
       setShowForm(false)
       setFormData({ type: 'email', subject: '', content: '', recipients: { type: 'all' } })
       setTimeout(loadCommunications, 2000)
     } catch (e) {
-      alert('Failed to send: ' + e.message)
+      error('Failed to send: ' + e.message)
     }
   }
 
