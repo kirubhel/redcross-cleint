@@ -70,7 +70,7 @@ export default function Login({ onLogin }) {
               <div className="space-y-4 mb-6">
                 <div className="flex items-start gap-3 animate-slide-in-left" style={{ animationDelay: '0.1s', animationFillMode: 'both' }}>
                   <div className="flex-shrink-0 w-10 h-10 bg-white bg-opacity-25 rounded-full flex items-center justify-center mt-1 hover:bg-opacity-35 transition-all duration-300">
-                    <span className="text-white text-xl">✓</span>
+                    <span className="text-red-500 text-xl">✓</span>
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1 text-lg">
@@ -89,7 +89,7 @@ export default function Login({ onLogin }) {
                 
                 <div className="flex items-start gap-3 animate-slide-in-left" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
                   <div className="flex-shrink-0 w-10 h-10 bg-white bg-opacity-25 rounded-full flex items-center justify-center mt-1 hover:bg-opacity-35 transition-all duration-300">
-                    <span className="text-white text-xl">✓</span>
+                    <span className="text-red-500 text-xl">✓</span>
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1 text-lg">
@@ -108,7 +108,7 @@ export default function Login({ onLogin }) {
                 
                 <div className="flex items-start gap-3 animate-slide-in-left" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
                   <div className="flex-shrink-0 w-10 h-10 bg-white bg-opacity-25 rounded-full flex items-center justify-center mt-1 hover:bg-opacity-35 transition-all duration-300">
-                    <span className="text-white text-xl">✓</span>
+                    <span className="text-red-500 text-xl">✓</span>
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1 text-lg">

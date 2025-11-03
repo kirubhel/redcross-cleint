@@ -25,12 +25,17 @@ export default function Donation() {
     setMsg('')
 
     try {
+      // Convert phone from +251 9XX XXX XXXX to 09XXXXXXXX format for payment
+      const phoneForPayment = formData.phone
+        ? formData.phone.replace(/\+251\s?/, '').replace(/\s/g, '').replace(/^9/, '09')
+        : formData.phone
+      
       // Initialize payment through payment gateway
       const paymentData = {
         first_name: formData.name,
         amount: parseFloat(formData.amount),
         email: formData.email,
-        phone_number: formData.phone,
+        phone_number: phoneForPayment,
         title: 'ERCS Donation',
         return_url: `${window.location.origin}/donation/success`,
         description: formData.message || 'Donation to Ethiopian Red Cross Society',

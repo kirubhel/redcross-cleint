@@ -20,7 +20,8 @@ export default function FormFieldManagement() {
     required: false,
     options: [],
     section: '',
-    order: 0
+    order: 0,
+    isActive: true
   })
 
   useEffect(() => {
@@ -64,7 +65,8 @@ export default function FormFieldManagement() {
         required: false,
         options: [],
         section: '',
-        order: 0
+        order: 0,
+        isActive: true
       })
     } catch (error) {
       alert(error.message || 'Failed to save field')
@@ -94,7 +96,8 @@ export default function FormFieldManagement() {
       required: field.required || false,
       options: field.options || [],
       section: field.section || '',
-      order: field.order || 0
+      order: field.order || 0,
+      isActive: field.isActive !== undefined ? field.isActive : true
     })
     setShowAddForm(true)
   }
@@ -147,7 +150,8 @@ export default function FormFieldManagement() {
                 required: false,
                 options: [],
                 section: '',
-                order: 0
+                order: 0,
+                isActive: true
               })
             }}
             className="px-4 py-2 bg-ercs-red text-white rounded-lg hover:bg-ercs-dark-red"
@@ -261,6 +265,16 @@ export default function FormFieldManagement() {
                 />
                 <span className="text-sm font-semibold">Required</span>
               </label>
+              {editing && (
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={formData.isActive}
+                    onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                  />
+                  <span className="text-sm font-semibold">Active</span>
+                </label>
+              )}
               <div className="flex-1"></div>
               <button
                 type="button"
@@ -293,6 +307,7 @@ export default function FormFieldManagement() {
               <th className="px-4 py-3 text-left text-sm font-semibold">Label</th>
               <th className="px-4 py-3 text-left text-sm font-semibold">Type</th>
               <th className="px-4 py-3 text-left text-sm font-semibold">Required</th>
+              <th className="px-4 py-3 text-left text-sm font-semibold">Status</th>
               <th className="px-4 py-3 text-left text-sm font-semibold">Section</th>
               <th className="px-4 py-3 text-left text-sm font-semibold">Actions</th>
             </tr>
@@ -309,6 +324,13 @@ export default function FormFieldManagement() {
                   </span>
                 </td>
                 <td className="px-4 py-3">{field.required ? '✓' : '-'}</td>
+                <td className="px-4 py-3">
+                  <span className={`px-2 py-1 rounded text-xs ${
+                    field.isActive !== false ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                  }`}>
+                    {field.isActive !== false ? 'Active' : 'Inactive'}
+                  </span>
+                </td>
                 <td className="px-4 py-3">{field.section || '-'}</td>
                 <td className="px-4 py-3">
                   <div className="flex gap-2">

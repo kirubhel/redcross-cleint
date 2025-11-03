@@ -141,11 +141,15 @@ export default function Register() {
       if (formData.role === 'member' && selectedMembershipType && res.token) {
         try {
           setToken(res.token) // Set token for authenticated payment request
+          // Convert phone from +251 9XX XXX XXXX to 09XXXXXXXX format for payment
+          const phoneForPayment = formData.phone
+            ? formData.phone.replace(/\+251\s?/, '').replace(/\s/g, '').replace(/^9/, '09')
+            : formData.phone
           const paymentRes = await api.payments.initiateMembership({
             membershipTypeId: formData.membershipTypeId,
             amount: selectedMembershipType.amount,
             email: formData.email,
-            phone_number: formData.phone
+            phone_number: phoneForPayment
           })
 
           if (paymentRes.checkoutUrl) {
@@ -287,7 +291,7 @@ export default function Register() {
               <div className="space-y-4 mb-6">
                 <div className="flex items-start gap-3 animate-slide-in-left" style={{ animationDelay: '0.1s', animationFillMode: 'both' }}>
                   <div className="flex-shrink-0 w-10 h-10 bg-white bg-opacity-25 rounded-full flex items-center justify-center mt-1 hover:bg-opacity-35 transition-all duration-300">
-                    <span className="text-white text-xl">✓</span>
+                    <span className="text-red-500 text-xl">✓</span>
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1 text-lg">
@@ -306,7 +310,7 @@ export default function Register() {
                 
                 <div className="flex items-start gap-3 animate-slide-in-left" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
                   <div className="flex-shrink-0 w-10 h-10 bg-white bg-opacity-25 rounded-full flex items-center justify-center mt-1 hover:bg-opacity-35 transition-all duration-300">
-                    <span className="text-white text-xl">✓</span>
+                    <span className="text-red-500 text-xl">✓</span>
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1 text-lg">
@@ -325,7 +329,7 @@ export default function Register() {
                 
                 <div className="flex items-start gap-3 animate-slide-in-left" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
                   <div className="flex-shrink-0 w-10 h-10 bg-white bg-opacity-25 rounded-full flex items-center justify-center mt-1 hover:bg-opacity-35 transition-all duration-300">
-                    <span className="text-white text-xl">✓</span>
+                    <span className="text-red-500 text-xl">✓</span>
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1 text-lg">
